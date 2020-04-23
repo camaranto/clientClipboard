@@ -39,6 +39,7 @@ public class ReceptorTCP extends Thread {
     
     public void enableReception(){
         isEnabled = true;
+        this.start();
     }
     public void disableReception(){
         isEnabled = false;

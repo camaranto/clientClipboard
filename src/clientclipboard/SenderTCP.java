@@ -61,7 +61,6 @@ public class SenderTCP {
                 break;
             default:
                 System.out.println("trash");
-
         }
     }
     
