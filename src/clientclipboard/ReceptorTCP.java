@@ -7,7 +7,7 @@ package clientclipboard;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -50,26 +50,26 @@ public class ReceptorTCP extends Thread {
         try {
             this.serverSocket=new ServerSocket(PORT);
             while(isEnabled){
-                Socket receivedSocket= serverSocket.accept();
-                InputStream IS =  receivedSocket.getInputStream();
-                
-                switch(new String(IS.readNBytes(4))){
-                    case "TEXT":
-                        byte[] load = IS.readAllBytes();
-                        caller.TextMessageReceiveFromClient(receivedSocket, load);
-                        break;
-                    case "FILE":
-                        
-                        break;
-                    case "IMG":
-                        
-                        break;
-                    default:
-                        System.out.println("trash");
-
+                try (Socket receivedSocket = serverSocket.accept()) {
+                    InputStream IS =  receivedSocket.getInputStream();
+                    
+                    switch(new String(IS.readNBytes(4))){
+                        case "TEXT":
+                            byte[] load = IS.readAllBytes();
+                            caller.TextMessageReceiveFromClient(receivedSocket, load);
+                            break;
+                        case "FILE":
+                            
+                            break;
+                        case "IMG":
+                            
+                            break;
+                        default:
+                            System.out.println("trash");
+                            
+                    }
+                    IS.close();
                 }
-                IS.close();
-                receivedSocket.close();
                 
             }
         } catch (IOException ex) {

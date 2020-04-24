@@ -15,6 +15,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -24,19 +25,25 @@ import java.io.IOException;
 public class View extends javax.swing.JFrame  implements messageHandler{
 
     ReceptorTCP receptor;
+    SenderTCP sender;
 /**
      * Creates new form View
      */
     private final int PORT = 8081;
     private String TEXT = null;
+    //private boolean isSynchronized;
     public View() throws UnknownHostException {
         this.receptor = new ReceptorTCP(PORT, this);
+        //this.isSynchronized = false;
         initComponents();
         jButton4.setIcon(new javax.swing.ImageIcon("misc/update.png"));
         jTextArea1.setLineWrap(true);
         jTextArea1.setWrapStyleWord(true);
         jLabel1.setText("IP: " + receptor.getLOCAL_IP());
         jLabel2.setText("HOSTNAME: " + receptor.getLOCAL_HOST_NAME());
+        jLabel3.setText("port: " + PORT);
+        this.setSize(400, 430);
+        this.setResizable(false);
     }
 
     /**
@@ -58,6 +65,7 @@ public class View extends javax.swing.JFrame  implements messageHandler{
         jButton4 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -107,12 +115,17 @@ public class View extends javax.swing.JFrame  implements messageHandler{
 
         jLabel2.setText("hostname: ");
 
+        jLabel3.setText("port:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(84, 84, 84)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(32, 32, 32)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -127,10 +140,8 @@ public class View extends javax.swing.JFrame  implements messageHandler{
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton3))
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(84, 84, 84)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -154,7 +165,9 @@ public class View extends javax.swing.JFrame  implements messageHandler{
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel3)
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         pack();
@@ -171,15 +184,23 @@ public class View extends javax.swing.JFrame  implements messageHandler{
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-    String myString = jTextArea1.getText();
-    StringSelection stringSelection = new StringSelection(myString);
-    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+        setStringToClipboard(jTextArea1.getText());
     
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        
+        if(!jTextField1.getText().isEmpty() && jButton3.getText().equals("SYNC")){
+            sender = new SenderTCP(jTextField1.getText(), PORT, this);
+            if(sender.SYNC()){
+                jButton3.setText("UNSYNC");
+            }else{
+                JOptionPane.showMessageDialog(null, "could not sync with " + jTextField1.getText() + " using port: " + PORT, "NOT SYNC", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }else{
+            sender.close();
+            jButton3.setText("SYNC");
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -192,19 +213,18 @@ public class View extends javax.swing.JFrame  implements messageHandler{
             } catch (UnsupportedFlavorException | IOException ex) {
                 Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-        }else{
-            TEXT = null;
-        }
-        if(TEXT != null){
             jTextArea1.setText("");
             jTextArea1.setText(TEXT);
+        }else{
+            TEXT = null;
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        
+        if(sender != null){
+            sender.send("TEXT", jTextArea1.getText().getBytes());
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     
@@ -254,17 +274,21 @@ public class View extends javax.swing.JFrame  implements messageHandler{
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 
-
+    private void setStringToClipboard(String str){
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents( new StringSelection(str), null);
+    }
     
     @Override
     public void TextMessageReceiveFromClient(Socket clientSocket, byte[] data) {
-        
+        jTextArea1.setText(new String(data));
+        setStringToClipboard(new String(data));
     }
 
     @Override
@@ -275,5 +299,10 @@ public class View extends javax.swing.JFrame  implements messageHandler{
     @Override
     public void ImgReceivedFromClient(Socket clientSocket, byte[] data) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void failedToSendMessage(Socket clientSocket, byte[] data) {
+        JOptionPane.showMessageDialog(null, "could not send message to " + jTextField1.getText() + ":" + PORT, "FAILED MESSAGE", JOptionPane.INFORMATION_MESSAGE);
     }
 }
