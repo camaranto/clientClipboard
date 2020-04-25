@@ -49,19 +49,21 @@ public class ReceptorTCP extends Thread {
     public void run(){
         try {
             this.serverSocket=new ServerSocket(PORT);
+            System.out.println("listening on port:" + PORT);
             while(isEnabled){
                 try (Socket receivedSocket = serverSocket.accept()) {
+                    System.out.println("client received from " + receivedSocket.getInetAddress().getHostAddress());
                     InputStream IS =  receivedSocket.getInputStream();
-                    
-                    switch(new String(IS.readNBytes(4))){
+                    switch(new String(IS.readNBytes(5)).split("/")[0]){
                         case "TEXT":
                             byte[] load = IS.readAllBytes();
+                            System.out.println("msg: " + new String(load));
                             caller.TextMessageReceiveFromClient(receivedSocket, load);
                             break;
                         case "FILE":
                             
                             break;
-                        case "IMG":
+                        case "IMGN":
                             
                             break;
                         default:
@@ -69,6 +71,7 @@ public class ReceptorTCP extends Thread {
                             
                     }
                     IS.close();
+                    receivedSocket.close();
                 }
                 
             }

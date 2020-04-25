@@ -37,13 +37,14 @@ public class SenderTCP {
     
     
     public void send(String type, Object load){
-        if(client == null || client.isClosed())
-            caller.failedToSendMessage(client, (byte[])load);
+        //if(client == null || client.isClosed())
+        //    caller.failedToSendMessage(client, (byte[])load);
         try {
             OutputStream os = client.getOutputStream();
             os.write((type + "/").getBytes());
             os.flush();
             sendHandler(type, load, os);
+            os.close();
         } catch (IOException ex) {
             Logger.getLogger(SenderTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -64,6 +65,14 @@ public class SenderTCP {
                 break;
             default:
                 System.out.println("trash");
+        }
+    }
+    
+    public void connect(){
+        try {
+            this.client = new Socket(RECEPTOR_IP, RECEPTOR_PORT);
+        } catch (IOException ex) {
+            Logger.getLogger(SenderTCP.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

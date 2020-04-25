@@ -15,6 +15,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.net.InetAddress;
 import javax.swing.JOptionPane;
 
 
@@ -29,7 +30,7 @@ public class View extends javax.swing.JFrame  implements messageHandler{
 /**
      * Creates new form View
      */
-    private final int PORT = 8081;
+    private final int PORT = 8080;
     private String TEXT = null;
     //private boolean isSynchronized;
     public View() throws UnknownHostException {
@@ -39,9 +40,9 @@ public class View extends javax.swing.JFrame  implements messageHandler{
         jButton4.setIcon(new javax.swing.ImageIcon("misc/update.png"));
         jTextArea1.setLineWrap(true);
         jTextArea1.setWrapStyleWord(true);
-        jLabel1.setText("IP: " + receptor.getLOCAL_IP());
-        jLabel2.setText("HOSTNAME: " + receptor.getLOCAL_HOST_NAME());
-        jLabel3.setText("port: " + PORT);
+        jLabel1.setText("IP: " + InetAddress.getLocalHost().getHostAddress());
+        jLabel2.setText("HOSTNAME: " + InetAddress.getLocalHost().getHostName());
+        jLabel3.setText("port:-----");
         this.setSize(400, 430);
         this.setResizable(false);
     }
@@ -56,7 +57,6 @@ public class View extends javax.swing.JFrame  implements messageHandler{
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
-        jRadioButton1 = new javax.swing.JRadioButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jButton2 = new javax.swing.JButton();
@@ -66,6 +66,9 @@ public class View extends javax.swing.JFrame  implements messageHandler{
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jButton5 = new javax.swing.JButton();
+        jTextField3 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -74,13 +77,6 @@ public class View extends javax.swing.JFrame  implements messageHandler{
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
-            }
-        });
-
-        jRadioButton1.setText("visible");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
             }
         });
 
@@ -117,6 +113,17 @@ public class View extends javax.swing.JFrame  implements messageHandler{
 
         jLabel3.setText("port:");
 
+        jTextField2.setText("8080");
+
+        jButton5.setText("connect");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jTextField3.setText("8080");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -134,27 +141,37 @@ public class View extends javax.swing.JFrame  implements messageHandler{
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton2))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE)
-                            .addComponent(jRadioButton1)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton3))
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButton5))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton3)))))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jRadioButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(21, 21, 21)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton5))
+                .addGap(50, 50, 50)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2)
@@ -173,15 +190,6 @@ public class View extends javax.swing.JFrame  implements messageHandler{
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        // TODO add your handling code here:
-        if(jRadioButton1.isSelected()){
-            receptor.enableReception();
-        }else{
-            receptor.disableReception();
-        }
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         setStringToClipboard(jTextArea1.getText());
@@ -190,13 +198,10 @@ public class View extends javax.swing.JFrame  implements messageHandler{
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        if(!jTextField1.getText().isEmpty() && jButton3.getText().equals("SYNC")){
-            sender = new SenderTCP(jTextField1.getText(), PORT, this);
-            if(sender.SYNC()){
-                jButton3.setText("UNSYNC");
-            }else{
-                JOptionPane.showMessageDialog(null, "could not sync with " + jTextField1.getText() + " using port: " + PORT, "NOT SYNC", JOptionPane.INFORMATION_MESSAGE);
-            }
+        if(!jTextField1.getText().isEmpty() && !jTextField3.getText().isEmpty() && jButton3.getText().equals("SYNC")){
+            sender = new SenderTCP(jTextField1.getText(), Integer.parseInt(jTextField3.getText()), this);
+            sender.connect();
+            jButton3.setText("UNSYNC");
         }else{
             sender.close();
             jButton3.setText("SYNC");
@@ -223,9 +228,31 @@ public class View extends javax.swing.JFrame  implements messageHandler{
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         if(sender != null){
-            sender.send("TEXT", jTextArea1.getText().getBytes());
+            sender.send("TEXT", jTextArea1.getText());
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        if(jButton5.getText().equals("disconnect")){
+            receptor.disableReception();
+            jLabel3.setText("port:-----");
+            jButton5.setText("connect");
+        }else{
+            String port = jTextField2.getText();
+            if(!port.isEmpty()){
+                try {
+                    receptor = new ReceptorTCP(Integer.parseInt(port), this);
+                    jLabel3.setText("port: " + port);
+                    receptor.enableReception();
+                    jButton5.setText("disconnect");
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(View.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     
     /**
@@ -272,13 +299,15 @@ public class View extends javax.swing.JFrame  implements messageHandler{
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 
     private void setStringToClipboard(String str){
