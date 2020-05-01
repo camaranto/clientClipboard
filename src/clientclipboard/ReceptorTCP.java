@@ -6,13 +6,11 @@
 package clientclipboard;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,13 +49,14 @@ public class ReceptorTCP extends Thread {
             this.serverSocket=new ServerSocket(PORT);
             System.out.println("listening on port:" + PORT);
             while(isEnabled){
+                System.out.println("yes");
                 try (Socket receivedSocket = serverSocket.accept()) {
                     System.out.println("client received from " + receivedSocket.getInetAddress().getHostAddress());
-                    InputStream IS =  receivedSocket.getInputStream();
-                    switch(new String(IS.readNBytes(5)).split("/")[0]){
+                    ObjectInputStream IS = new ObjectInputStream( receivedSocket.getInputStream());
+                    switch(IS.readUTF().split("/")[0]){
                         case "TEXT":
-                            byte[] load = IS.readAllBytes();
-                            System.out.println("msg: " + new String(load));
+                            String load = IS.readUTF();
+                            //System.out.println("msg: " + new String(load));
                             caller.TextMessageReceiveFromClient(receivedSocket, load);
                             break;
                         case "FILE":

@@ -7,6 +7,7 @@ package clientclipboard;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -40,9 +41,7 @@ public class SenderTCP {
         //if(client == null || client.isClosed())
         //    caller.failedToSendMessage(client, (byte[])load);
         try {
-            OutputStream os = client.getOutputStream();
-            os.write((type + "/").getBytes());
-            os.flush();
+            ObjectOutputStream os = new ObjectOutputStream(client.getOutputStream());
             sendHandler(type, load, os);
             os.close();
         } catch (IOException ex) {
@@ -51,10 +50,12 @@ public class SenderTCP {
         
     }
     
-    private void sendHandler(String type, Object load, OutputStream os) throws IOException{
+    private void sendHandler(String type, Object load, ObjectOutputStream os) throws IOException{
+        os.writeUTF(type + "/");
+        os.flush();
         switch(type){
             case "TEXT":
-                os.write(load.toString().getBytes());
+                os.writeUTF(load.toString());
                 os.flush();
                 break;
             case "FILE":
